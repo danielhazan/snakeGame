@@ -1,0 +1,95 @@
+class Food{
+static int xLoc,yLoc;
+field int location;
+constructor Food new(int x , int y)
+{
+	
+	let xLoc = x;
+	let yLoc = y;
+	let location = (32 * x) + (y / 16);
+	return this;	
+}
+
+method int getxFood()
+{
+	return xLoc;
+}
+
+method int getyFood()
+{
+	return yLoc;
+}
+
+method void setFoodCord(int x, int y)
+{
+	let xLoc = x;
+	let yLoc = y;
+	return;
+}
+
+method void printFood(){
+/*
+	var int memAddress;
+	let memAddress = 16384 + location;
+	do Memory.poke(memAddress + 0, 0);
+	do Memory.poke(memAddress + 32, 1920);
+	do Memory.poke(memAddress + 64, 128);
+	do Memory.poke(memAddress + 96, 128);
+	do Memory.poke(memAddress + 128, 992);
+	do Memory.poke(memAddress + 160, 1168);
+	do Memory.poke(memAddress + 192, 2504);
+	do Memory.poke(memAddress + 224, 3768);
+	do Memory.poke(memAddress + 256, 3768);
+	do Memory.poke(memAddress + 288, 2504);
+	do Memory.poke(memAddress + 320, 1168);
+	do Memory.poke(memAddress + 352, 992);
+	do Memory.poke(memAddress + 384, 0);
+	do Memory.poke(memAddress + 416, 0);
+	do Memory.poke(memAddress + 448, 0);
+	do Memory.poke(memAddress + 480, 0);
+	*/
+	do Screen.setColor(true);
+	do Screen.drawRectangle(xLoc,yLoc,xLoc+3,yLoc+3); 
+	return;
+	}
+	
+method void deleteFood()
+{
+	do Screen.setColor(false);
+	do Screen.drawRectangle(xLoc,yLoc,xLoc+3,yLoc+3);
+	return;	
+	
+}
+method int generateRandomNumberY()
+{
+	var Array Rand;
+	var int value;
+	
+	let Rand = Array.new(1);
+	let value = Rand;
+	
+	let value = (value - ((value / 250) * 250));
+	return value;
+	
+}
+
+
+method int generateRandomNumberX()
+{
+	var Array Rand;
+	var int value;
+	
+	let Rand = Array.new(1);
+	let value = Rand;
+	
+	let value = (value - ((value / 500) * 500));
+	return value;
+	
+}
+
+
+method void dispose() {
+		do Memory.deAlloc(this);
+        return;
+	}
+}
