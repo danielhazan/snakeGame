@@ -1,0 +1,413 @@
+class Snake {
+	field int size,direction,axis_x,axis_y , NumOfLinks;
+	field Array body;
+	field Array currRect;
+	field Board board;
+	field int live, points;
+	 
+	
+	constructor Snake new(int Ax, int Ay) {
+		var int i,j;
+		let NumOfLinks = 3; // number of nodes
+		let size = 3; // size of each node
+		let i = 0;
+		let j = 0;
+		let live = 5;
+		let points = 1;
+		let axis_x = Ax;
+		let axis_y = Ay;
+		let direction = 4; // starting direction
+		
+		
+		//first link of snake
+		let body = Array.new(200);
+		let body[0] = Ax;
+		let body[1] = Ay;
+		let body[2] = Ax + size;
+		let body[3] = Ay + size;
+		
+		//second link of snake
+		let body[4] = Ax + size;
+		let body[5] = Ay;
+		let body[6] =(Ax + (2 * size));
+		let body[7] = Ay + size;
+		
+		//third link of snake
+		let body[8] =(Ax + (2 * size));
+		let body[9] = Ay;
+		let body[10] =(Ax + (3 * size));
+		let body[11] =(Ay + size);
+		
+		return this;
+	}
+	
+	method void drawSnake(){ 
+		var int i,j, xHead, yHead;
+		let i  = 0;
+		let j  = 0;
+		let xHead = getHeadXCord();
+		let yHead = getHeadYCord();
+		do Screen.setColor(true);
+		
+		if(~(board.checkIfInsideBorders((xHead + size), (yHead + size))))
+		{
+			
+				do Output.printString("you died");
+				do Sys.halt();
+			
+			//do updateLive(); //decreasing lives by 1
+		}
+		while(j < ((4 * NumOfLinks) - 4)) //check if eat himself
+		{
+			
+			if(xHead > body[j])
+			{
+				
+				if(xHead<body[j+2])
+				{
+					if(yHead>body[j+1])
+					{
+						if(yHead<body[j+3])
+						{do Output.printString("hererere");
+							do Output.printString("eat youself till tomorrow.goodbye");
+							do Sys.halt();
+						}
+					}
+				}
+			}
+			let j = j+1;
+			
+		}
+		
+		
+		while(i < ((4 * NumOfLinks) - 4)) // because on the index we already move forward
+		{
+			do Screen.setColor(true);
+			do Screen.drawRectangle(body[i], body[i+1], body[i+2], body[i+3]);
+			let i = i + 4;
+		}
+		return;
+	}
+	
+	method void updateLive()
+	{
+		let live = live - 1;
+		return;
+	}
+	method void updatePoints()
+	{
+		let points = points + 1;
+		return;
+	}
+	method int getPoints()
+	{
+		return points;
+	}
+	method int getLives()
+	{
+		return live;
+	}
+	
+	method void checkIfFoodEaten( Food food, int direction)
+	{
+		var int x,y , Foodx, Foody;
+		let x = getHeadXCord();
+		let y = getHeadYCord();
+		let Foodx = food.getxFood();
+		let Foody = food.getyFood();
+		if(3 > Math.abs(x-Foodx))
+		{
+	
+				if(3 > Math.abs(y-Foody))
+				{
+			
+					do updatePoints();
+					let Foodx = food.generateRandomNumberX();
+					let Foody = food.generateRandomNumberY();
+					do food.deleteFood();
+					do food.setFoodCord(Foodx,Foody); // think how to randomize locations for food on board!!!!
+					do food.printFood();	
+						
+					do grow(direction);
+					
+					
+				}
+			}
+	
+	return;
+}
+	
+	method void grow(int direction)
+	{
+		var int lastX,nextX,nextX2,nextX3,points;
+		if(NumOfLinks = 40)//decide the max size of snake!!
+		{
+			do Output.printString("You win");
+			do Sys.halt();
+		}
+		let points = getPoints();
+		if(points=30)
+		{
+			do Output.printString("You win");
+			do Sys.halt();
+		}
+		
+		let lastX = (NumOfLinks- 1) * 4;// the index of x1 coord of snake's head
+		let nextX = lastX + 4;// the next index of x1 coord which wiil points to the next new link rectangle 
+		let nextX2 = lastX + 8;// the next index of x1 coord which wiil points to the next new link rectangle 
+		let nextX3 = lastX + 12;// the next index of x1 coord which wiil points to the next new link rectangle 
+		let NumOfLinks = NumOfLinks + 3;
+		
+		if(direction = 4)
+		{
+			// if we were moving left so add more link after head 
+			let body[nextX] = body[lastX] -size;// x1 next coord less by "size"
+			let body[nextX2] = body[lastX] -(2*size);// x1 next coord less by "size"
+			let body[nextX3] = body[lastX] -(3*size);// x1 next coord less by "size"
+			let body[nextX+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX2+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX3+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX+2] = body[lastX+2] - size;//x2 next coord less by "size"
+			let body[nextX2+2] = body[lastX+2] - (2*size);//x2 next coord less by "size"
+			let body[nextX3+2] = body[lastX+2] - (3*size);//x2 next coord less by "size"
+			let body[nextX+3] = body[lastX+3] ;//y2 next coord not changed
+			let body[nextX2+3] = body[lastX+3] ;//y2 next coord not changed
+			let body[nextX3+3] = body[lastX+3] ;//y2 next coord not changed
+		}
+		if(direction = 3)
+		{
+			// if we were moving right so add more link after head 
+			let body[nextX] = body[lastX] +size;// x1 next coord growed up by "size"
+			let body[nextX2] = body[lastX] +(2*size);// x1 next coord growed up by "size"
+			let body[nextX3] = body[lastX] +(3*size);// x1 next coord growed up by "size"
+			let body[nextX+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX2+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX3+1] = body[lastX+1];// y1 next coord not changed
+			let body[nextX+2] = body[lastX+2] + size;//x2 next coord growed up by "size"
+			let body[nextX2+2] = body[lastX+2] + (2*size);//x2 next coord growed up by "size"
+			let body[nextX3+2] = body[lastX+2] + (3*size);//x2 next coord growed up by "size"
+			let body[nextX+3] = body[lastX+3] ;//y2 next coord not changed
+			let body[nextX2+3] = body[lastX+3] ;//y2 next coord not changed
+			let body[nextX3+3] = body[lastX+3] ;//y2 next coord not changed
+		}
+		
+		if(direction = 1)
+		{
+			// if we were moving up so add more link after head 
+			let body[nextX] = body[lastX] ;// x1 next coord not changed
+			let body[nextX2] = body[lastX] ;// x1 next coord not changed
+			let body[nextX3] = body[lastX] ;// x1 next coord not changed
+			let body[nextX+1] = body[lastX+1]-size;// y1 next coord less in "size"
+			let body[nextX2+1] = body[lastX+1]-(2*size);// y1 next coord less in "size"
+			let body[nextX3+1] = body[lastX+1]-(3*size);// y1 next coord less in "size"
+			let body[nextX+2] = body[lastX+2];//x2 next coord not changed
+			let body[nextX2+2] = body[lastX+2];//x2 next coord not changed
+			let body[nextX3+2] = body[lastX+2];//x2 next coord not changed
+			let body[nextX+3] = body[lastX+3]-size ;//y2 next coord less in "size"
+			let body[nextX2+3] = body[lastX+3]-(2*size) ;//y2 next coord less in "size"
+			let body[nextX3+3] = body[lastX+3]-(3*size) ;//y2 next coord less in "size"
+		}
+		if(direction = 2)
+		{
+			// if we were moving down so add more link after head 
+			let body[nextX] = body[lastX] ; // x1 next coord not changed
+			let body[nextX2] = body[lastX] ; // x1 next coord not changed
+			let body[nextX3] = body[lastX] ; // x1 next coord not changed
+			let body[nextX+1] = body[lastX+1]+size; // y1 next coord growed up in "size"
+			let body[nextX2+1] = body[lastX+1]+(2*size); // y1 next coord growed up in "size"
+			let body[nextX3+1] = body[lastX+1]+(3*size); // y1 next coord growed up in "size"
+			let body[nextX+2] = body[lastX+2]; //x2 next coord not changed
+			let body[nextX2+2] = body[lastX+2]; //x2 next coord not changed
+			let body[nextX3+2] = body[lastX+2]; //x2 next coord not changed
+			let body[nextX+3] = body[lastX+3]+size; //y2 next coord growed up in "size"
+			let body[nextX2+3] = body[lastX+3]+(2*size); //y2 next coord growed up in "size"
+			let body[nextX3+3] = body[lastX+3]+(3*size); //y2 next coord growed up in "size"
+		
+		}
+		return;
+	}
+	
+	method int getHeadXCord()
+	{
+		//return the right most cell in body Array(the initial x location of the snake's head link)
+		return body[(NumOfLinks - 1) * 4];
+	}
+	method int getHeadYCord()
+	{
+		//return the right most cell in body Array(initial y location of snake's head link)
+		return body[((NumOfLinks - 1) * 4) + 1];
+	}
+	
+	method void destroySnake(){ // need to be fixed it just destroy head at the moment
+		do Screen.setColor(false);
+		do Screen.drawRectangle(axis_x, axis_y, axis_x + size, axis_y + size);
+		return;
+	}
+	
+    // dispose the snake
+    method void dispose() {
+		do Memory.deAlloc(this);
+        return;
+	}
+	
+	
+	method void updateDirection(int value) {
+		let direction = value;
+		return;
+	}
+	
+	method int getDirection() {
+		return direction;
+	}
+	method void moveSnake(int speed,Food food)
+	{
+		var int i,j ;
+		var int curdirection;
+		var int xHead, yHead;
+		let i = 0;
+		let j = 0;
+		
+		let xHead = getHeadXCord();
+		let yHead = getHeadYCord();
+		
+		while(j < ((4 * NumOfLinks) - 4)) //check if eat himself
+		{
+			
+			if(xHead > body[j])
+			{
+				if(xHead<body[j+2])
+				{
+					if(yHead>body[j+1])
+					{
+						if(yHead<body[j+3])
+						{
+							do Output.printString("eat youself till tomorrow.goodbye");
+							do Sys.halt();
+						}
+					}
+				}
+			}
+			let j = j+1;
+			
+		}
+		
+		if(~(board.checkIfInsideBorders((xHead + size), (yHead + size))))
+		{		
+				do Output.printString("you died");
+				do Sys.halt();
+			
+		}
+		
+		do checkIfFoodEaten(food, direction);
+	
+		
+		
+		//first erase the first rectangle of snake's tail (in body[1-4])
+		do Screen.setColor(false);
+		//do Screen.printString(body[3])
+        do Screen.drawRectangle(body[0], body[1], body[2], body[3]);
+		
+		//updating the body array according to direction (not including head!!! bec. head depends on direction!)
+		while(i<((NumOfLinks*4) -4))
+		{
+			let body[i] = body[i+4];
+			let body[i+1] = body[i+5];
+			let body[i+2] = body[i+6];
+			let body[i+3] = body[i+7];
+			let i = i+4;
+			
+		}
+		let curdirection = getDirection();
+		if(curdirection = 1) { do moveUp(); }
+		if(curdirection = 2) { do moveDown(); }
+		if(curdirection = 3) { do moveLeft(); }
+		if(curdirection = 4) { do moveRight(); }
+		do Sys.wait(speed); // control the next movement means controlling speed!.
+		return;
+	}		
+   
+   method void moveUp() {
+	  var int lastX;
+      let lastX = (NumOfLinks-1)*4;
+   /**
+   
+      if (axis_y > 1) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(axis_x, (axis_y + size) - 1, axis_x + size, axis_y + size);
+         let axis_y = axis_y - 2;
+		 do updateLocation();
+         do Screen.setColor(true);
+         do Screen.drawRectangle(axis_x, axis_y, axis_x + size, axis_y + 1);
+      }*/
+	  
+	  let body[lastX+1] = body[lastX+1] -size;//the head y1 coordinate is less in "size" factor!
+	  let body[lastX+3] = body[lastX+3] -size;//the head y2 coordinate is less in "size" factor!
+	  do Screen.setColor(true);
+      do Screen.drawRectangle(body[lastX], body[lastX+1],body[lastX+2],body[lastX+3]);
+      return;
+   }
+
+   /** Moves the square down by 2 pixels. */
+   method void moveDown() {
+	 var int lastX;
+      let lastX = (NumOfLinks-1)*4;
+	  
+	  /**
+      if ((axis_y + size) < 254) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(axis_x, axis_y, axis_x + size, axis_y + 1);
+         let axis_y = axis_y + 2;
+		 do updateLocation();
+         do Screen.setColor(true);
+         do Screen.drawRectangle(axis_x, (axis_y + size) - 1, axis_x + size, axis_y + size);
+      }*/
+	  do Screen.setColor(true);
+	  let body[lastX+1] = body[lastX+1] +size;//the head y1 coordinate is more in "size" factor!
+	  let body[lastX+3] = body[lastX+3] +size;//the head y2 coordinate is mare in "size" factor!
+	  do Screen.drawRectangle(body[lastX], body[lastX+1],body[lastX+2],body[lastX+3]);
+      return;
+   }
+
+   /** Moves the square left by 2 pixels. */
+   method void moveLeft() {
+      var int lastX;
+      let lastX = (NumOfLinks-1)*4;
+	  /**
+	  
+      if (axis_x > 1) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle((axis_x + size) - 1, axis_y, axis_x + size, axis_y + size);
+         let axis_x = axis_x - 2;
+		 do updateLocation();
+         do Screen.setColor(true);
+         do Screen.drawRectangle(axis_x, axis_y, axis_x + 1, axis_y + size);
+      }*/
+	  do Screen.setColor(true);
+	  let body[lastX] = body[lastX] -size;//the head x1 coordinate is less in "size" factor!
+	  let body[lastX+2] = body[lastX+2] -size;//the head x2 coordinate is less in "size" factor!
+	  do Screen.drawRectangle(body[lastX], body[lastX+1],body[lastX+2],body[lastX+3]);
+      return;
+   }
+
+   /** Moves the square right by 2 pixels. */
+   method void moveRight() {
+      var int lastX;
+      let lastX = (NumOfLinks-1)*4;
+	  
+	  /**
+      if ((axis_x + size) < 510) {
+         do Screen.setColor(false);
+         do Screen.drawRectangle(axis_x, axis_y, axis_x + 1, axis_y + size);
+         let axis_x = axis_x + 2;
+		 do updateLocation();
+         do Screen.setColor(true);
+         do Screen.drawRectangle((axis_x + size) - 1, axis_y, axis_x + size, axis_y + size);
+      }*/
+	  do Screen.setColor(true);
+	  let body[lastX] = body[lastX] +size;//the head x1 coordinate is more in "size" factor!
+	  let body[lastX+2] = body[lastX+2] + size;//the head x2 coordinate is more in "size" factor!
+	  do Screen.drawRectangle(body[lastX], body[lastX+1],body[lastX+2],body[lastX+3]);
+      return;
+   }
+	
+}
