@@ -1,0 +1,96 @@
+class SnakeGame {
+	field Snake snake;
+	field Board board;
+	field Food food;
+	field int speed,difficulty;
+	static int value;
+	//do updateValue(1);
+	
+	
+	// make the game elements
+	constructor SnakeGame new(int level) {
+		// make the snake and draw it onto the board
+		let snake = Snake.new(256,128); 
+		do snake.drawSnake(); 
+		let food = Food.new(150,160);
+		// change speed of snake according to difficulty 
+		let difficulty = level;
+		if(difficulty = 1) { let speed = 40; }
+		else { let speed = 20; }
+		let board = Board.new(difficulty,snake);
+		do board.drawBoard();
+		return this;
+		
+	}
+	
+	// dispose this game
+    method void dispose() {
+		do snake.dispose();
+		do Memory.deAlloc(this);
+		return;
+   }
+	
+	
+	method int randItX(int val) {
+		var int var1;
+		let var1 = val;
+		while((value > 500) | (value < 10)){
+			let value = ((value * 7) - (((value * 7) / 16) * 16 ));
+		}
+		return value;
+	}
+	
+	
+	method int randItY() {
+		var int value;
+		let value = 0;
+		return value;
+	}
+	
+	// the method which is the core of the game the runs an infinite loop until 'q' is pressed down
+	method void run(){
+		var char key;
+		var boolean exitGame;
+		//var int snakeLives;
+		//var int snakePoints;
+		//var randFoodX;
+		//var randFoodY;
+		let exitGame = false;
+		//let randFoodX 
+		//let randFoodY  
+		
+		while(~exitGame){
+			// each iteration printing the board and the snake 
+			// make board and print it 
+			//let snakeLives = snake.getLives();
+			//let snakePoints = snake.getPoints();
+			 // random number of food coordinates? need to be implemented
+			
+			
+			// wait until the keyboard is being pressed down
+			while(key = 0){
+				let key = Keyboard.keyPressed();
+				do snake.moveSnake(speed,food);
+				do snake.drawSnake(); 
+			}
+			
+			// checks what user pressed
+			if (key = 81) { let exitGame = true; } // q key
+			if (key = 131) { do snake.updateDirection(1); } // up arrow 
+			if (key = 133) { do snake.updateDirection(2); } // down arrow 
+			if (key = 130) { do snake.updateDirection(3); } // left arrow 
+			if (key = 132) { do snake.updateDirection(4); } // right arrow 
+			
+			// wait until the keyboard is being released
+			while(~(key = 0)){
+				let key = Keyboard.keyPressed();
+				do snake.moveSnake(speed,food);
+				//do snake.checkIfFoodEaten(food, snake.getDirection()); // only when keyboard is pressed
+				do board.drawBoard();
+			}
+		}
+		return;
+	}
+	
+	
+}
