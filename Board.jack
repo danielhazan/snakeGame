@@ -1,0 +1,126 @@
+class Board {
+	field Food food;
+	field Snake snake;
+	static int difficulty;
+	field int randomFoodX, randomFoodY;
+
+constructor Board new(int level, Snake mySnake) {
+		let snake = mySnake;
+		//let food = Food.new(randomFoodX,randomFoodY);
+		//let randomFoodX = randomFoodX1;
+		//let randomFoodY = randomFoodY1;
+		
+		let difficulty = level;
+		return this;
+	}
+	
+	
+	/** this method check if the snake's head moved to illegal location on board*/
+	method boolean checkIfInsideBorders(int HeadX, int HeadY)
+	{	
+		var int borderUp;
+		var int borderDown;
+		var int borderRight;
+		var int borderLeft;
+		let borderLeft = 10;
+		let borderRight = 500;
+		let borderUp = 25;
+		let borderDown = 250;
+		
+		//if its out of border limits
+		if(HeadX < borderLeft)
+		{	
+			return false;
+		}
+		if(HeadX > borderRight)
+		{	
+			return false;
+		}
+		if(HeadY > borderDown)
+		{
+			return false;
+		}
+
+
+		if(HeadY < borderUp)
+		{
+			
+			return false;
+		}	
+		/**
+			do Output.printString("Headx:");
+			do Output.printInt(HeadX);
+			do Output.println();
+			do Output.printString("HeadY:");
+			do Output.printInt(HeadY);
+			do Output.println();*/
+			if(HeadX >70)
+			{
+				if(HeadY > 100)
+				{
+					if(HeadY < 190)			
+					{	
+						if(HeadX<75)
+						{
+							return false;
+						}
+					}	
+				}
+			}
+			if(HeadX < 420)
+			{
+				if(HeadX>320)
+				{
+					if(HeadY > 200)
+					{
+						if(HeadY < 205)
+						{
+							return false;
+						}
+					}	
+				}
+			}		
+	return true;
+	}
+
+	
+	method void drawBoard()
+	{
+		var int lives,points, foodSize;
+		var Array borderslevelX, borderslevelY;
+		let lives = snake.getLives();
+		let points = snake.getPoints();
+		let foodSize = 5;
+		do Output.moveCursor(1,2);
+		do Output.printString("lives remained:");
+		do Output.printString(" ");
+		do Output.printInt(lives);
+		do Output.moveCursor(1,25);
+		do Output.printString("points remained:");
+		do Output.printString(" ");
+		do Output.printInt(points);
+		
+		
+		//printing the  board borders
+		do Screen.setColor(true);
+		do Screen.drawRectangle(10,25,500,26); // border up
+		do Screen.drawRectangle(10,249,500,250); // border down
+		do Screen.drawRectangle(499,5,500,250); // border right
+		do Screen.drawRectangle(10,5,11,250); // border left
+		//printing borders on board according to difficulty level
+		do Screen.drawRectangle(70,100,75,190);
+		do Screen.drawRectangle(320,200,420,205);
+		
+
+		//printing Food location
+		do food.printFood();
+		
+		return;
+	}
+	method void dispose() {
+		do Memory.deAlloc(this);
+        return;
+	}
+	
+	
+}
